@@ -1,0 +1,13 @@
+0,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/0_died.wav
+1,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/1_was.wav
+1,4,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/1_accident.wav
+2,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/2_was.wav
+2,9,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/2_was.wav
+3,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/3_died.wav
+4,3,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/4_was.wav
+5,2,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/5_tried.wav
+5,12,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/5_was.wav
+6,4,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/6_was.wav
+7,3,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/7_met.wav
+9,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/9_happened.wav
+9,5,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/9_asked.wav

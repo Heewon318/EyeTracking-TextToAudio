@@ -1,0 +1,16 @@
+0,2,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test3.wav
+0,8,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test1.wav
+0,18,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test4.wav
+1,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test2.wav
+1,7,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test1.wav
+2,3,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test3.wav
+3,2,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test2.wav
+4,6,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test4.wav
+4,11,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test4.wav
+4,13,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test2.wav
+5,5,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test1.wav
+6,15,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test3.wav
+7,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test2.wav
+8,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test4.wav
+9,1,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test3.wav
+9,11,C:/Users/user/ET_TTA_UNITY_FMOD/EyeTracking-TextToAudio/Assets/StreamingAssets/Test1.wav
