@@ -463,8 +463,8 @@ MonoBehaviour:
   switchSettingsMigration: 1
   HasSourceProject: 1
   HasPlatforms: 1
-  sourceProjectPath: ../EyeTracking-TextToAudio-fmod-project/EyeTracking-TextToAudio-fmod-project.fspro
-  sourceBankPath: ../EyeTracking-TextToAudio-fmod-project/Build
+  sourceProjectPath: ../EyeTracking-TextToAudio-fmod/EyeTracking-TextToAudio-fmod-project.fspro
+  sourceBankPath: ../EyeTracking-TextToAudio-fmod/Build
   sourceBankPathUnformatted: 
   BankRefreshCooldown: 5
   ShowBankRefreshWindow: 1
