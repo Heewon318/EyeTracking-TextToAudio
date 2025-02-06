@@ -19,6 +19,17 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
     private bool isLogging = false;
     private bool isAudioApplied = false;
 
+    private StreamWriter writer;
+    private float logWriteInterval = 0.5f;
+    private float lastLogWriteTime = 0f;
+
+    private List<(int, int)> trackingTargetIndices = new List<(int, int)>();
+    private const int maxTrackingTargets = 5;
+    private Dictionary<(int, int), float> gazeDurations = new Dictionary<(int, int), float>();
+    private float maxFixationDuration = 1f;
+    private float decayRate = 0.1f;
+
+
     public enum LogMode
     {
         None,
@@ -55,18 +66,14 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
         if (eyeTrackingData.GazeRay.IsValid && logMode == LogMode.Eye)
         {
             // GazeRay의 원점(시선의 위치)과 방향 벡터 가져오기
-            var rayOrigin = eyeTrackingData.GazeRay.Origin;
-            var rayDirection = eyeTrackingData.GazeRay.Direction;
-            RectTransform rectTransform = textMeshProUGUI.rectTransform;
-            Vector3 localPos = rectTransform.localPosition;
-            Vector3 worldPos = rectTransform.TransformPoint(localPos);
-            Vector3 gazePos = rayOrigin + rayDirection * (worldPos.z - rayOrigin.z) / rayDirection.z;
+            Vector3 gazePos = GetGazePosition(eyeTrackingData);
             lineIndex = TMP_TextUtilities.FindIntersectingLine(textMeshProUGUI, gazePos, null);
             wordIndex = TMP_TextUtilities.FindIntersectingWord(textMeshProUGUI, gazePos, null);
             if (lineIndex != -1 && wordIndex != -1)
             {
-                LogEveryFrame(eyeTrackingData, gazePos, lineIndex, wordIndex);
-                Fix(lineIndex + ProjectManager.Instance.GetCurrentPageStartSentenceIndex(), wordIndex);
+                int sentenceIndex = lineIndex + ProjectManager.Instance.GetCurrentPageStartSentenceIndex();
+                Fix(sentenceIndex, wordIndex);
+                LogEveryFrame(eyeTrackingData, gazePos, sentenceIndex, wordIndex);
             }
         }
         else if (logMode == LogMode.Mouse)
@@ -74,11 +81,35 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
             Vector3 mousePos = Input.mousePosition;
             lineIndex = TMP_TextUtilities.FindIntersectingLine(textMeshProUGUI, mousePos, Camera.main);
             wordIndex = TMP_TextUtilities.FindIntersectingWord(textMeshProUGUI, mousePos, Camera.main);
-            if (lineIndex == -1 || wordIndex == -1) return;
-            Debug.Log(textMeshProUGUI.textInfo.wordInfo[wordIndex].GetWord());
-            Fix(lineIndex + ProjectManager.Instance.GetCurrentPageStartSentenceIndex(), wordIndex);
+            if (lineIndex != -1 && wordIndex != -1)
+            {
+                Debug.Log(textMeshProUGUI.textInfo.wordInfo[wordIndex].GetWord());
+                int sentenceIndex = lineIndex + ProjectManager.Instance.GetCurrentPageStartSentenceIndex();
+                Fix(sentenceIndex, wordIndex);
+            }
         }
 
+        if (Time.time - lastLogWriteTime >= logWriteInterval)
+        {
+            writer?.Flush();
+            SendGazeDataToProjectManager(textMeshProUGUI.GetTextInfo().);
+            lastLogWriteTime = Time.time;
+        }
+    }
+    private Vector3 GetGazePosition(TobiiXR_EyeTrackingData eyeTrackingData)
+    {
+        var rayOrigin = eyeTrackingData.GazeRay.Origin;
+        var rayDirection = eyeTrackingData.GazeRay.Direction;
+/*        RectTransform rectTransform = textMeshProUGUI.rectTransform;
+        Vector3 localPos = rectTransform.localPosition;
+        Vector3 worldPos = rectTransform.TransformPoint(localPos);*/
+        Vector3 worldPos = textMeshProUGUI.rectTransform.position;
+        return rayOrigin + rayDirection * (worldPos.z - rayOrigin.z) / rayDirection.z;
+    }
+
+    public bool IsLogging()
+    {
+        return isLogging;
     }
 
     public void GazeFocusChanged(bool hasFocus)
@@ -93,12 +124,6 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
         }
     }
 
-
-    private List<(int, int)> trackingTargetIndices = new List<(int, int)>();
-    private const int maxTrackingTargets = 5;
-    private Dictionary<(int, int), float> gazeDurations = new Dictionary<(int, int), float>();
-    private float maxFixationDuration = 1f;
-    private float decayRate = 0.1f;
     private void Fix(int sIdx, int wIdx)
     {
         foreach (var trackedTargetIdx in trackingTargetIndices)
@@ -172,98 +197,69 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
 
 
     // Eye Tracking Data
-    public void Logging()
+    public void StartLogging()
     {
         if (!isLogging)
         {
-            Debug.Log("[FocusibleText.Logging] Start logging");
             string timestamp = DateTime.Now.ToString("yyyyMMddHHmmss");
             string textFileName = ProjectManager.Instance.GetTextFileName();
             int user_id = ProjectManager.Instance.GetUserID();
             string fileName = $"{textFileName}_{user_id.ToString("D4")}_{timestamp}.csv";
             absoluteGazeDataPath = Path.Combine(logDirectory, fileName);
-            using (var sw = new StreamWriter(absoluteGazeDataPath, true))
-            {
-                sw.WriteLine(
-                    "Timestamp," +
-                    "Convergence distance," +
-                    "Convergence distance validity," +
-                    "Gaze origin X," +
-                    "Gaze origin Y," +
-                    "Gaze origin Z," +
-                    "Gaze direction X," +
-                    "Gaze direction Y," +
-                    "Gaze direction Z," +
-                    "Left eye blink," +
-                    "Right eye blink," +
-                    "Sentence Index," +
-                    "Line Index," +
-                    "Word Index," +
-                    "Word," +
-                    "Word X," +
-                    "Word Y," +
-                    "Word Z," +
-                    "Gaze target X," +
-                    "Gaze target Y," +
-                    "Gaze target Z," +
-                    "Duration"
-                );
-            }
-        }
-        else
-        {
-            Debug.Log("[FocusibleText.Logging] Complete logging");
-        }
 
-        isLogging = !isLogging;
+            writer = new StreamWriter(absoluteGazeDataPath, true);
+            writer.WriteLine(
+                "Timestamp," +
+                "Convergence distance," +
+                "Convergence distance validity," +
+                "Gaze origin X,Gaze origin Y,Gaze origin Z," +
+                "Gaze direction X,Gaze direction Y,Gaze direction Z," +
+                "Left eye blink,Right eye blink," +
+                "Sentence Index,Line Index,Word Index," +
+                "Word," +
+                "Word X,Word Y,Word Z," +
+                "Gaze target X,Gaze target Y,Gaze target Z," +
+                "Duration"
+            );
+
+            isLogging = true;
+        }
     }
 
-
-    private StreamWriter writer;
-
-    public void LogEveryFrame(TobiiXR_EyeTrackingData eyeTrackingData, Vector3 gazeTargetWorldPos, int lineIndex, int wordIndex)
+    public void LogEveryFrame(TobiiXR_EyeTrackingData eyeTrackingData, Vector3 gazeTargetWorldPos, int sentenceIndex, int wordIndex)
     {
+        if (writer == null) return;
+
         //string timestamp = DateTime.Now.ToString("HH:mm:ss.ffff");
         var gazeRay = eyeTrackingData.GazeRay;
-
         TMP_TextInfo textInfo = textMeshProUGUI.textInfo;
         TMP_WordInfo wordInfo = textInfo.wordInfo[wordIndex];
         TMP_CharacterInfo firstCharInfo = textInfo.characterInfo[wordInfo.firstCharacterIndex];
         TMP_CharacterInfo lastCharInfo = textInfo.characterInfo[wordInfo.lastCharacterIndex];
-        Vector3 firstCharWorldPos = firstCharInfo.bottomLeft;
-        Vector3 lastCharWorldPos = lastCharInfo.topRight;
-        Vector3 wordWorldPos = (firstCharWorldPos + lastCharWorldPos) / 2;
+        Vector3 wordWorldPos = (firstCharInfo.bottomLeft + lastCharInfo.topRight) / 2;
         Vector3 wordScreenPos = Camera.main.WorldToScreenPoint(wordWorldPos);
         Vector3 gazeTargetScreenPos = Camera.main.WorldToScreenPoint(gazeTargetWorldPos);
-        int sentenceIndex = lineIndex + ProjectManager.Instance.GetCurrentPageStartSentenceIndex();
 
-        using (writer = new StreamWriter(absoluteGazeDataPath, true))
-        {
-            writer.WriteLine(
-                $"{eyeTrackingData.Timestamp}," +
-                $"{eyeTrackingData.ConvergenceDistance}," +
-                $"{eyeTrackingData.ConvergenceDistanceIsValid}," +
-                $"{gazeRay.Origin.x}," +
-                $"{gazeRay.Origin.y}," +
-                $"{gazeRay.Origin.z}," +
-                $"{gazeRay.Direction.x}," +
-                $"{gazeRay.Direction.y}," +
-                $"{gazeRay.Direction.z}," +
-                $"{eyeTrackingData.IsLeftEyeBlinking}," +
-                $"{eyeTrackingData.IsRightEyeBlinking}," +
-                $"{sentenceIndex}," +
-                $"{lineIndex}," +
-                $"{wordIndex}," +
-                $"{wordInfo.GetWord()}," +
-                $"{wordScreenPos.x}," +
-                $"{wordScreenPos.y}," +
-                $"{wordScreenPos.z}," +
-                $"{gazeTargetScreenPos.x},"+
-                $"{gazeTargetScreenPos.y},"+
-                $"{gazeTargetScreenPos.z},"+
-                $"{Time.deltaTime}"
-            );
-        }
+        writer.WriteLine(
+            $"{eyeTrackingData.Timestamp}," +
+            $"{eyeTrackingData.ConvergenceDistance}," +
+            $"{eyeTrackingData.ConvergenceDistanceIsValid}," +
+            $"{gazeRay.Origin.x},{gazeRay.Origin.y},{gazeRay.Origin.z}," +
+            $"{gazeRay.Direction.x},{gazeRay.Direction.y},{gazeRay.Direction.z}," +
+            $"{eyeTrackingData.IsLeftEyeBlinking},{eyeTrackingData.IsRightEyeBlinking}," +
+            $"{sentenceIndex},{lineIndex},{wordIndex}," +
+            $"{wordInfo.GetWord()}," +
+            $"{wordScreenPos.x},{wordScreenPos.y},{wordScreenPos.z}," +
+            $"{gazeTargetScreenPos.x},{gazeTargetScreenPos.y},{gazeTargetScreenPos.z},"+
+            $"{Time.deltaTime}"
+        );
+    }
+
+    public void StopLogging()
+    {
+        writer?.Close();
+        writer = null;
+        isLogging = false;
     }
 
     public void SetAudioApplied(bool value)
@@ -280,6 +276,14 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
         return wordIndex;
     }
 
+    private void SendGazeDataToProjectManager()
+    {
+        int sentenceIndex = lineIndex + ProjectManager.Instance.GetCurrentPageStartSentenceIndex();
+        float duration = gazeDurations.TryGetValue((sentenceIndex, wordIndex), out float d) ? d : 0f;
+        string sentence = ProjectManager.Instance.GetSentenceFromIndex(sentenceIndex);
+
+        ProjectManager.Instance.SendGazeData(sentenceIndex, wordIndex, duration, sentence);
+    }
 
     private void OnApplicationQuit()
     {

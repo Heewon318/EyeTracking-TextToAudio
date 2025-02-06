@@ -114,10 +114,6 @@ public class ProjectManager : MonoBehaviour
         {
             InitSetting();
         }
-        else if (Input.GetKeyDown(KeyCode.X))
-        {
-            focusibleText.Logging();
-        }
         else if (Input.GetKeyDown(KeyCode.LeftArrow))
         {
             fileReader.ShowPreviousPage();
@@ -142,10 +138,19 @@ public class ProjectManager : MonoBehaviour
                 fileReader.ShowNextPage();
             audioManager.PlayTest(fileReader.GetCurrentPageStartSentenceIndex(), -2);
         }
-        else if (ControllerManager.Instance.GetButtonPressDown(ControllerButton.Menu))
+        else if (ControllerManager.Instance.GetButtonPressDown(ControllerButton.Menu) || Input.GetKeyDown(KeyCode.L))
         {
             Debug.Log("[ProjectManager] Menu button pressed.");
-            focusibleText.Logging();
+            if (focusibleText.IsLogging())
+            {
+                focusibleText.StopLogging();
+                Debug.Log("Logging stopped!");
+            }
+            else
+            {
+                focusibleText.StartLogging();
+                Debug.Log("Logging started!");
+            }
         }
 
         //HandleMovement();
@@ -375,6 +380,19 @@ public class ProjectManager : MonoBehaviour
     public int GetUserID()
     {
         return userId;
+    }
+
+    public string GetSentenceFromIndex(int index)
+    {
+        return fileReader.GetSentence(index);
+    }
+
+    public async void SendGazeData(int sentenceIndex, int wordIndex, float duration, string sentence)
+    {
+        if (requester == null) return;
+
+        string request = $"GAZE:{sentenceIndex},{wordIndex},{duration},{sentence}";
+        _ = requester.SendGazeDataAsync(request);
     }
 
 

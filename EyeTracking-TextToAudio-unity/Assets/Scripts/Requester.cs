@@ -51,4 +51,32 @@ public class Requester : MonoBehaviour
         }
     }
 
+    public async Task SendGazeDataAsync(string gazeData)
+    {
+        try
+        {
+            using (TcpClient client = new TcpClient(SERVER_IP, SERVER_PORT))
+            using (NetworkStream stream = client.GetStream())
+            {
+                string request = "GAZE:" + gazeData;
+                byte[] requestData = Encoding.UTF8.GetBytes(gazeData);
+                await stream.WriteAsync(requestData, 0, requestData.Length);
+                Debug.Log($"[Requester] Sent Gaze Data: {gazeData}");
+
+                byte[] responseData = new byte[256];
+                int bytesRead = await stream.ReadAsync(responseData, 0, responseData.Length);
+                string response = Encoding.UTF8.GetString(responseData, 0, bytesRead);
+
+                if (response.StartsWith("AUDIO:"))
+                {
+                    string audioPath = response.Substring(6);
+                    Debug.Log($"[Requester] Received Audio Path: {audioPath}");
+                }
+            }
+        }
+        catch (Exception ex)
+        {
+            Debug.LogError($"[Requester] Error sending gaze data: {ex.Message}");
+        }
+    }
 }

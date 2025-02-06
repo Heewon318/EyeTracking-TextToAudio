@@ -1269,7 +1269,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 80, y: 80, z: 0.001}
-  m_Center: {x: 0, y: 0, z: -0.00028000004}
+  m_Center: {x: 0, y: 0, z: -0.000060000006}
 --- !u!114 &249768770
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1285,7 +1285,7 @@ MonoBehaviour:
   _offset: {x: 0, y: 0, z: 0.000009999996}
   _padding: {x: 0, y: 0, z: 0}
   _adjustToDepth: 1
-  _center: {x: 0, y: 0, z: -0.00028000004}
+  _center: {x: 0, y: 0, z: -0.000060000006}
   _size: {x: 80, y: 80, z: 0.001}
   _collider: {fileID: 249768769}
   _rectTransform: {fileID: 249768766}
@@ -2750,7 +2750,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 80, y: 80, z: 0.001}
-  m_Center: {x: 0, y: 0, z: -0.00037000002}
+  m_Center: {x: 0, y: 0, z: -0.00012000002}
 --- !u!114 &652183127
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2766,7 +2766,7 @@ MonoBehaviour:
   _offset: {x: 0, y: 0, z: 0.000009999996}
   _padding: {x: 0, y: 0, z: 0}
   _adjustToDepth: 1
-  _center: {x: 0, y: 0, z: -0.00037000002}
+  _center: {x: 0, y: 0, z: -0.00012000002}
   _size: {x: 80, y: 80, z: 0.001}
   _collider: {fileID: 652183126}
   _rectTransform: {fileID: 652183123}
@@ -6165,7 +6165,7 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 80, y: 80, z: 0.001}
-  m_Center: {x: 0, y: 0, z: -0.00039000003}
+  m_Center: {x: 0, y: 0, z: -0.00014000002}
 --- !u!114 &1912709145
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6181,7 +6181,7 @@ MonoBehaviour:
   _offset: {x: 0, y: 0, z: 0.000009999996}
   _padding: {x: 0, y: 0, z: 0}
   _adjustToDepth: 1
-  _center: {x: 0, y: 0, z: -0.00039000003}
+  _center: {x: 0, y: 0, z: -0.00014000002}
   _size: {x: 80, y: 80, z: 0.001}
   _collider: {fileID: 1912709144}
   _rectTransform: {fileID: 1912709141}
