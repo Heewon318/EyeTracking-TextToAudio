@@ -92,7 +92,7 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
         if (Time.time - lastLogWriteTime >= logWriteInterval)
         {
             writer?.Flush();
-            SendGazeDataToProjectManager(textMeshProUGUI.GetTextInfo().);
+            SendGazeDataToProjectManager();
             lastLogWriteTime = Time.time;
         }
     }
