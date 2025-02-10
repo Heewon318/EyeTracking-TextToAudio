@@ -392,7 +392,7 @@ public class ProjectManager : MonoBehaviour
         if (requester == null) return;
 
         string request = $"GAZE:{sentenceIndex},{wordIndex},{duration},{sentence}";
-        _ = requester.SendGazeDataAsync(request);
+        await requester.SendGazeDataAsync(request);
     }
 
 

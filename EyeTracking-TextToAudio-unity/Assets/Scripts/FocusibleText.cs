@@ -185,8 +185,6 @@ public class FocusibleText : MonoBehaviour, IGazeFocusable
                 return;
             }
 
-            Debug.Log("3333");
-
             if (curTargetIdx.wIdx >= 0 && curTargetIdx.wIdx < textMeshProUGUI.textInfo.wordInfo.Length)
             {
                 Debug.Log(textMeshProUGUI.textInfo.wordInfo[curTargetIdx.wIdx]);
